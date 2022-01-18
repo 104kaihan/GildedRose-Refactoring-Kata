@@ -59,17 +59,17 @@ final class GildedRose
 
             // 销售期限过期，品质`Quality`会以双倍速度加速下降
             if ($item->sell_in < 0) {
-                if (!$aged) {
+                if ($aged) {
+                    if ($item->quality < 50) {
+                        $item->quality += 1;
+                    }
+                } else {
                     if (!$backstage) {
                         if ($item->quality > 0) {
                             $item->quality -= 1;
                         }
                     } else {
                         $item->quality -= $item->quality;
-                    }
-                } else {
-                    if ($item->quality < 50) {
-                        $item->quality += 1;
                     }
                 }
             }
