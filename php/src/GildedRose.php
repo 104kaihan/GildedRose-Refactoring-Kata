@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace GildedRose;
 
+use GildedRose\Item\Aged;
+
 final class GildedRose
 {
     /**
@@ -33,7 +35,7 @@ final class GildedRose
 
             // "Backstage passes"（后台通行证）与"Aged Brie"（陈年布利奶酪）类似，其品质`Quality`会随着时间推移而提高
             if ($aged) {
-                $this->agedUpdateQuality($item);
+                (new Aged())->updateQuality($item);
             } elseif ($backstage) {
                 $this->backstageUpdateQuality($item);
             } elseif ($conjured) {
@@ -67,21 +69,7 @@ final class GildedRose
             $item->quality -= 1;
         }
     }
-
-    /**
-     * Aged Brie: Quality 處理
-     *
-     * @param $item
-     */
-    private function agedUpdateQuality($item): void
-    {
-        $this->safeIncreaseQuality($item);
-
-        if ($this->isExpired($item)) {
-            $this->safeIncreaseQuality($item);
-        }
-    }
-
+    
     /**
      * Backstage: Quality 處理
      *
