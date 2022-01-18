@@ -37,20 +37,7 @@ final class GildedRose
             if ($aged) {
                 $this->agedUpdateQuality($item, $expired);
             } elseif ($backstage) {
-                $this->safeIncreaseQuality($item);
-                // 剩10天或更少的时候，品质`Quality`每天提高2
-                if ($item->sell_in < 10) {
-                    $this->safeIncreaseQuality($item);
-                }
-                // 5天或更少的时候，品质`Quality`每天提高3
-                if ($item->sell_in < 5) {
-                    $this->safeIncreaseQuality($item);
-                }
-
-                if ($expired) {
-                    // 一旦过期，品质就会降为0
-                    $item->quality -= $item->quality;
-                }
+                $this->backstageUpdateQuality($item, $expired);
             } else { // 其他 item
                 $this->safeDecreaseQuality($item);
 
@@ -98,6 +85,31 @@ final class GildedRose
 
         if ($expired) {
             $this->safeIncreaseQuality($item);
+        }
+    }
+
+    /**
+     * Backstage: Quality 處理
+     *
+     * @param $item
+     * @param bool $expired
+     */
+    private function backstageUpdateQuality($item, bool $expired): void
+    {
+        $this->safeIncreaseQuality($item);
+
+        // 剩10天或更少的时候，品质`Quality`每天提高2
+        if ($item->sell_in < 10) {
+            $this->safeIncreaseQuality($item);
+        }
+        // 5天或更少的时候，品质`Quality`每天提高3
+        if ($item->sell_in < 5) {
+            $this->safeIncreaseQuality($item);
+        }
+
+        if ($expired) {
+            // 一旦过期，品质就会降为0
+            $item->quality -= $item->quality;
         }
     }
 }
