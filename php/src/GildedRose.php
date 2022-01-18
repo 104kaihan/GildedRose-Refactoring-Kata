@@ -23,13 +23,7 @@ final class GildedRose
             $backstage = $item->name === 'Backstage passes to a TAFKAL80ETC concert';
             $sulfuras = $item->name === 'Sulfuras, Hand of Ragnaros';
 
-            if (!$aged and !$backstage) {
-                if ($item->quality > 0) {
-                    if (!$sulfuras) {
-                        $item->quality -= 1;
-                    }
-                }
-            } else {
+            if ($aged || $backstage) {
                 if ($item->quality < 50) {
                     $item->quality += 1;
                     if ($backstage) {
@@ -43,6 +37,12 @@ final class GildedRose
                                 $item->quality += 1;
                             }
                         }
+                    }
+                }
+            } else {
+                if ($item->quality > 0) {
+                    if (!$sulfuras) {
+                        $item->quality -= 1;
                     }
                 }
             }
