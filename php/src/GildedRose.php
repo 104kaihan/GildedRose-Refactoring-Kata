@@ -41,8 +41,8 @@ final class GildedRose
                 if ($item->sell_in < 6) {
                     $this->safeIncreaseQuality($item);
                 }
-            } elseif ($item->quality > 0) { // 其他 item
-                $item->quality -= 1;
+            } else { // 其他 item
+                $this->safeDecreaseQuality($item);
             }
 
             $item->sell_in -= 1;
@@ -54,8 +54,8 @@ final class GildedRose
                 } elseif ($backstage) {
                     // 旦过期，品质就会降为0
                     $item->quality -= $item->quality;
-                } elseif ($item->quality > 0) { // 其他 item
-                    $item->quality -= 1;
+                } else { // 其他 item
+                    $this->safeDecreaseQuality($item);
                 }
             }
         }
@@ -70,6 +70,18 @@ final class GildedRose
     {
         if ($item->quality < 50) {
             $item->quality += 1;
+        }
+    }
+
+    /**
+     * Quality 会随着时间推移而下降 但`Quality`永远不会为负值
+     *
+     * @param $item
+     */
+    private function safeDecreaseQuality($item): void
+    {
+        if ($item->quality > 0) {
+            $item->quality -= 1;
         }
     }
 }
