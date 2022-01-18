@@ -35,11 +35,7 @@ final class GildedRose
 
             // "Backstage passes"（后台通行证）与"Aged Brie"（陈年布利奶酪）类似，其品质`Quality`会随着时间推移而提高
             if ($aged) {
-                $this->safeIncreaseQuality($item);
-
-                if ($expired) {
-                    $this->safeIncreaseQuality($item);
-                }
+                $this->agedUpdateQuality($item, $expired);
             } elseif ($backstage) {
                 $this->safeIncreaseQuality($item);
                 // 剩10天或更少的时候，品质`Quality`每天提高2
@@ -87,6 +83,21 @@ final class GildedRose
     {
         if ($item->quality > 0) {
             $item->quality -= 1;
+        }
+    }
+
+    /**
+     * Aged Brie: Quality 處理
+     *
+     * @param $item
+     * @param bool $expired
+     */
+    private function agedUpdateQuality($item, bool $expired): void
+    {
+        $this->safeIncreaseQuality($item);
+
+        if ($expired) {
+            $this->safeIncreaseQuality($item);
         }
     }
 }
