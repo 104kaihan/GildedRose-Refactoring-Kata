@@ -64,12 +64,12 @@ final class GildedRose
                         $item->quality += 1;
                     }
                 } else {
-                    if (!$backstage) {
+                    if ($backstage) {
+                        $item->quality -= $item->quality;
+                    } else {
                         if ($item->quality > 0) {
                             $item->quality -= 1;
                         }
-                    } else {
-                        $item->quality -= $item->quality;
                     }
                 }
             }
