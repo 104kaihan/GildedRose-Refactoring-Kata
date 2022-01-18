@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GildedRose;
 
 use GildedRose\Item\Aged;
+use GildedRose\Item\Backstage;
 
 final class GildedRose
 {
@@ -37,7 +38,7 @@ final class GildedRose
             if ($aged) {
                 (new Aged())->updateQuality($item);
             } elseif ($backstage) {
-                $this->backstageUpdateQuality($item);
+                (new Backstage())->updateQuality($item);
             } elseif ($conjured) {
                 $this->conjuredUpdateQuality($item);
             } else { // 其他 item
@@ -67,30 +68,6 @@ final class GildedRose
     {
         if ($item->quality > 0) {
             $item->quality -= 1;
-        }
-    }
-    
-    /**
-     * Backstage: Quality 處理
-     *
-     * @param $item
-     */
-    private function backstageUpdateQuality($item): void
-    {
-        $this->safeIncreaseQuality($item);
-
-        // 剩10天或更少的时候，品质`Quality`每天提高2
-        if ($item->sell_in < 10) {
-            $this->safeIncreaseQuality($item);
-        }
-        // 5天或更少的时候，品质`Quality`每天提高3
-        if ($item->sell_in < 5) {
-            $this->safeIncreaseQuality($item);
-        }
-
-        if ($this->isExpired($item)) {
-            // 一旦过期，品质就会降为0
-            $item->quality -= $item->quality;
         }
     }
 
