@@ -30,16 +30,13 @@ final class GildedRose
 
             $item->sell_in -= 1;
 
-            // 销售期限过期
-            $expired = $item->sell_in < 0;
-
             // "Backstage passes"（后台通行证）与"Aged Brie"（陈年布利奶酪）类似，其品质`Quality`会随着时间推移而提高
             if ($aged) {
-                $this->agedUpdateQuality($item, $expired);
+                $this->agedUpdateQuality($item);
             } elseif ($backstage) {
-                $this->backstageUpdateQuality($item, $expired);
+                $this->backstageUpdateQuality($item);
             } else { // 其他 item
-                $this->OtherUpdateQuality($item, $expired);
+                $this->OtherUpdateQuality($item);
             }
         }
     }
@@ -72,13 +69,12 @@ final class GildedRose
      * Aged Brie: Quality 處理
      *
      * @param $item
-     * @param bool $expired
      */
-    private function agedUpdateQuality($item, bool $expired): void
+    private function agedUpdateQuality($item): void
     {
         $this->safeIncreaseQuality($item);
 
-        if ($expired) {
+        if ($this->isExpired($item)) {
             $this->safeIncreaseQuality($item);
         }
     }
@@ -87,9 +83,8 @@ final class GildedRose
      * Backstage: Quality 處理
      *
      * @param $item
-     * @param bool $expired
      */
-    private function backstageUpdateQuality($item, bool $expired): void
+    private function backstageUpdateQuality($item): void
     {
         $this->safeIncreaseQuality($item);
 
@@ -102,7 +97,7 @@ final class GildedRose
             $this->safeIncreaseQuality($item);
         }
 
-        if ($expired) {
+        if ($this->isExpired($item)) {
             // 一旦过期，品质就会降为0
             $item->quality -= $item->quality;
         }
@@ -112,15 +107,26 @@ final class GildedRose
      * 其他一般 item : Quality 處理
      *
      * @param $item
-     * @param bool $expired
      */
-    private function OtherUpdateQuality($item, bool $expired): void
+    private function OtherUpdateQuality($item): void
     {
         $this->safeDecreaseQuality($item);
 
         // 品质`Quality`会以双倍速度加速下降
-        if ($expired) {
+        if ($this->isExpired($item)) {
             $this->safeDecreaseQuality($item);
         }
+    }
+
+    /**
+     * 销售期限过期
+     *
+     * @param $item
+     *
+     * @return bool true 過期
+     */
+    private function isExpired($item): bool
+    {
+        return $item->sell_in < 0;
     }
 }
