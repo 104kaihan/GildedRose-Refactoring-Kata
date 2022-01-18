@@ -1,6 +1,8 @@
-/.idea 
-/report.xml 
-/.phpstorm.meta.php 
+/.idea
+/report.xml
+/.phpstorm.meta.php
 /.phpunit.result.cache
 /build
 /vendor
+
+tests/approvals/ApprovalTest.testTestFixture.received.txt
