@@ -23,7 +23,8 @@ final class GildedRose
             $backstage = $item->name === 'Backstage passes to a TAFKAL80ETC concert';
             $sulfuras = $item->name === 'Sulfuras, Hand of Ragnaros';
 
-            if ($aged || $backstage) {
+            // "Backstage passes"（后台通行证）与"Aged Brie"（陈年布利奶酪）类似，其品质`Quality`会随着时间推移而提高
+            if ($aged) {
                 if ($item->quality < 50) {
                     $item->quality += 1;
                     if ($backstage) {
@@ -39,7 +40,23 @@ final class GildedRose
                         }
                     }
                 }
-            } else {
+            } elseif ($backstage) {
+                if ($item->quality < 50) {
+                    $item->quality += 1;
+                    if ($backstage) {
+                        if ($item->sell_in < 11) {
+                            if ($item->quality < 50) {
+                                $item->quality += 1;
+                            }
+                        }
+                        if ($item->sell_in < 6) {
+                            if ($item->quality < 50) {
+                                $item->quality += 1;
+                            }
+                        }
+                    }
+                }
+            } else { // 其他 item
                 if ($item->quality > 0) {
                     if (!$sulfuras) {
                         $item->quality -= 1;
