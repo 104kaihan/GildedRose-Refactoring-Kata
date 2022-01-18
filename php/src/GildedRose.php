@@ -30,24 +30,16 @@ final class GildedRose
 
             // "Backstage passes"（后台通行证）与"Aged Brie"（陈年布利奶酪）类似，其品质`Quality`会随着时间推移而提高
             if ($aged) {
-                if ($item->quality < 50) {
-                    $item->quality += 1;
-                }
+                $this->safeIncreaseQuality($item);
             } elseif ($backstage) {
-                if ($item->quality < 50) {
-                    $item->quality += 1;
-                    // 剩10天或更少的时候，品质`Quality`每天提高2
-                    if ($item->sell_in < 11) {
-                        if ($item->quality < 50) {
-                            $item->quality += 1;
-                        }
-                    }
-                    // 5天或更少的时候，品质`Quality`每天提高3
-                    if ($item->sell_in < 6) {
-                        if ($item->quality < 50) {
-                            $item->quality += 1;
-                        }
-                    }
+                $this->safeIncreaseQuality($item);
+                // 剩10天或更少的时候，品质`Quality`每天提高2
+                if ($item->sell_in < 11) {
+                    $this->safeIncreaseQuality($item);
+                }
+                // 5天或更少的时候，品质`Quality`每天提高3
+                if ($item->sell_in < 6) {
+                    $this->safeIncreaseQuality($item);
                 }
             } elseif ($item->quality > 0) { // 其他 item
                 $item->quality -= 1;
@@ -58,9 +50,7 @@ final class GildedRose
             // 销售期限过期，品质`Quality`会以双倍速度加速下降
             if ($item->sell_in < 0) {
                 if ($aged) {
-                    if ($item->quality < 50) {
-                        $item->quality += 1;
-                    }
+                    $this->safeIncreaseQuality($item);
                 } elseif ($backstage) {
                     // 旦过期，品质就会降为0
                     $item->quality -= $item->quality;
@@ -68,6 +58,18 @@ final class GildedRose
                     $item->quality -= 1;
                 }
             }
+        }
+    }
+
+    /**
+     * Quality 会随着时间推移而提高 但`Quality`永远不会超过50
+     *
+     * @param $item
+     */
+    private function safeIncreaseQuality($item): void
+    {
+        if ($item->quality < 50) {
+            $item->quality += 1;
         }
     }
 }
