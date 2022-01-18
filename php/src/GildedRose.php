@@ -22,6 +22,7 @@ final class GildedRose
             $aged = $item->name === 'Aged Brie';
             $backstage = $item->name === 'Backstage passes to a TAFKAL80ETC concert';
             $sulfuras = $item->name === 'Sulfuras, Hand of Ragnaros';
+            $conjured = $item->name === 'Conjured Mana Cake';
 
             // "Sulfuras"（萨弗拉斯—炎魔拉格纳罗斯之手）永不过期，也不会降低品质`Quality`
             if ($sulfuras) {
@@ -35,8 +36,10 @@ final class GildedRose
                 $this->agedUpdateQuality($item);
             } elseif ($backstage) {
                 $this->backstageUpdateQuality($item);
+            } elseif ($conjured) {
+                $this->conjuredUpdateQuality($item);
             } else { // 其他 item
-                $this->OtherUpdateQuality($item);
+                $this->otherUpdateQuality($item);
             }
         }
     }
@@ -104,11 +107,24 @@ final class GildedRose
     }
 
     /**
+     * Conjured item : Quality 處理
+     *
+     * `Quality`下降速度比正常物品快一倍
+     *
+     * @param $item
+     */
+    private function conjuredUpdateQuality($item): void
+    {
+        $this->otherUpdateQuality($item);
+        $this->otherUpdateQuality($item);
+    }
+
+    /**
      * 其他一般 item : Quality 處理
      *
      * @param $item
      */
-    private function OtherUpdateQuality($item): void
+    private function otherUpdateQuality($item): void
     {
         $this->safeDecreaseQuality($item);
 
