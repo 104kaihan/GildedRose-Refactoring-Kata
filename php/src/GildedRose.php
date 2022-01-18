@@ -39,12 +39,7 @@ final class GildedRose
             } elseif ($backstage) {
                 $this->backstageUpdateQuality($item, $expired);
             } else { // 其他 item
-                $this->safeDecreaseQuality($item);
-
-                // 品质`Quality`会以双倍速度加速下降
-                if ($expired) {
-                    $this->safeDecreaseQuality($item);
-                }
+                $this->OtherUpdateQuality($item, $expired);
             }
         }
     }
@@ -110,6 +105,22 @@ final class GildedRose
         if ($expired) {
             // 一旦过期，品质就会降为0
             $item->quality -= $item->quality;
+        }
+    }
+
+    /**
+     * 其他一般 item : Quality 處理
+     *
+     * @param $item
+     * @param bool $expired
+     */
+    private function OtherUpdateQuality($item, bool $expired): void
+    {
+        $this->safeDecreaseQuality($item);
+
+        // 品质`Quality`会以双倍速度加速下降
+        if ($expired) {
+            $this->safeDecreaseQuality($item);
         }
     }
 }
