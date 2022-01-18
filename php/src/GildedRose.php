@@ -47,14 +47,19 @@ final class GildedRose
                 $this->safeDecreaseQuality($item);
             }
 
-            // 销售期限过期，品质`Quality`会以双倍速度加速下降
-            if ($item->sell_in < 0) {
-                if ($aged) {
+            // 销售期限过期
+            $expired = $item->sell_in < 0;
+            if ($aged) {
+                if ($expired) {
                     $this->safeIncreaseQuality($item);
-                } elseif ($backstage) {
-                    // 旦过期，品质就会降为0
+                }
+            } elseif ($backstage) {
+                if ($expired) {
+                    // 一旦过期，品质就会降为0
                     $item->quality -= $item->quality;
-                } else { // 其他 item
+                }
+            } else { // 其他 item，品质`Quality`会以双倍速度加速下降
+                if ($expired) {
                     $this->safeDecreaseQuality($item);
                 }
             }
